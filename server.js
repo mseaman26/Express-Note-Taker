@@ -24,9 +24,9 @@ app.post("/api/notes", (req, res) => {
         if (err) {
           console.error(err);
         } else {
-          const parsedNotes = JSON.parse(data);
+          const parsedNotes = JSON.parse(data)
           req.body.id = generateUniqueID({length: 4})
-          parsedNotes.push(req.body);
+          parsedNotes.push(req.body)
           updatedNotes = parsedNotes
           fs.writeFile(
             './db/db.json',
@@ -39,11 +39,37 @@ app.post("/api/notes", (req, res) => {
           console.log(updatedNotes)
           db = updatedNotes
           res.json(req.body)
-          res.sendFile(path.join(__dirname+"/public", "api/notes.html"))
+          // res.sendFile(path.join(__dirname+"/public", "api/notes.html"))
         }
-      })
-      
-   
+      }) 
+})
+
+app.delete("/api/notes/:id", (req, res) =>{
+
+
+    let updatedNotes
+    fs.readFile('./db/db.json', "utf8", (err, data) => {
+        if(err){
+            console.log(err)
+        }else{
+            let parsedNotes = JSON.parse(data)
+            console.log(req.params.id)
+            for(let i = 0; i < parsedNotes.length; i ++){
+                if(req.params.id == parsedNotes[i].id){
+                    parsedNotes.splice(i,1)
+                    console.log("item deleted")
+                }
+            }
+            updatedNotes = parsedNotes
+            fs.writeFile("./db/db.json", JSON.stringify(parsedNotes, null, 4), (err) =>{
+                err ? console.log(err): console.info("successfully updated Notes!")
+            })
+            db = updatedNotes
+            console.log(updatedNotes)
+            res.json(req.params.id)
+            // res.sendfile(path.join(__dirname+"/public", "api/notes.html"))
+        }
+    })
 })
 
 app.get("/api/notes", (req, res) => {
