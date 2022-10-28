@@ -3,7 +3,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const db = require("./db/db.json")
+let db = require("./db/db.json")
 const fs = require('fs');
 const generateUniqueID = require("generate-unique-id");
 const { fstat } = require('fs');
@@ -12,8 +12,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const PORT = 3000;
-
-
 
 // Routes
 app.get("/notes", (req, res) => {
@@ -39,8 +37,9 @@ app.post("/api/notes", (req, res) => {
                 : console.info('Successfully updated Notes!')
           );
           console.log(updatedNotes)
+          db = updatedNotes
           res.json(req.body)
-          res.sendFile(path.join(__dirname+"/public", "/notes.html"))
+          res.sendFile(path.join(__dirname+"/public", "api/notes.html"))
         }
       })
       
@@ -51,20 +50,7 @@ app.get("/api/notes", (req, res) => {
     res.json(db)
 })
 
-
-
 app.get('*', (req, res) => res.sendFile(path.join(__dirname+"/public", 'index.html')))
-
-
-
-
-
-
-
-
-
-
-
 
 
 app.listen(PORT, () => console.log(`Example app listening at http://localhost:${PORT}`));
