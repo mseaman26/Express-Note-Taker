@@ -44,32 +44,31 @@ app.post("/api/notes", (req, res) => {
       }) 
 })
 
-// app.delete("/api/notes/:id", (req, res) =>{
+app.delete("/api/notes/:id", (req, res) =>{
 
-//     fs.readFile('./db/db.json', "utf8", (err, data) => {
-//         if(err){
-//             console.log(err)
-//         }else{
-//             let parsedNotes = JSON.parse(data)
-//             console.log(req.params.id)
-//             for(let i = 0; i < parsedNotes.length; i++){
-//                 if(req.params.id == parsedNotes[i].id){
-//                     parsedNotes.splice(i,1)
-//                     console.log("item deleted")
-//                     db = parsedNotes
-//                     fs.writeFile("./db/db.json", JSON.stringify(parsedNotes, null, 4), (err) =>{
-//                         err ? console.log(err): console.info("successfully updated Notes!")
-                        
-//                     });
-//                     res.json("node deleted")
-//                 }
-//             }
-            
-                    
-//         } 
-               
-//     })    
-// })
+    fs.readFile('./db/db.json', "utf8", (err, data) => {
+        if(err){
+            console.log(err)
+        }else{
+            let parsedNotes = JSON.parse(data)
+            console.log(req.params.id)
+            for(let i = 0; i < parsedNotes.length; i++){
+                let noteId = req.params.id
+                if(req.params.id == parsedNotes[i].id){
+                    parsedNotes.splice(i,1)
+                    console.log("item deleted")
+                    db = parsedNotes
+                    fs.writeFile("./db/db.json", JSON.stringify(parsedNotes, null, 4), (err) =>{
+                        err ? console.log(err): console.info("successfully updated Notes!")
+                    });
+                    console.log(noteId)
+                    //just the dar
+                    res.send(noteId)
+                }
+            }        
+        }          
+    })    
+})
 
 app.get("/api/notes", (req, res) => {
     res.json(db)
