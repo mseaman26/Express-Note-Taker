@@ -14,10 +14,12 @@ app.use(express.urlencoded({ extended: true }));
 const PORT = process.env.PORT || 3000;
 
 // Routes
+
+//Takes the user to the "notes page"
 app.get("/notes", (req, res) => {
     res.sendFile(path.join(__dirname+"/public", "notes.html"))
 })
-
+//hendles when the user adds a new note.  It is written into the database and the note is displayed in the note list
 app.post("/api/notes", (req, res) => {
     let updatedNotes
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
@@ -39,11 +41,13 @@ app.post("/api/notes", (req, res) => {
           console.log(updatedNotes)
           db = updatedNotes
           res.json(req.body)
-          // res.sendFile(path.join(__dirname+"/public", "api/notes.html"))
+
         }
       }) 
 })
 
+
+//My best attempt at getting the delete buttons to work.  I'd love it if someone could show me what I did wrong.  It might have to do with using require instead of fs.readfile, but I tried that.  Anyways, it does delete the notes from the database, but it's not displayed until the server is killed and the program is run again
 app.delete("/api/notes/:id", (req, res) =>{
 
     fs.readFile('./db/db.json', "utf8", (err, data) => {
@@ -62,14 +66,14 @@ app.delete("/api/notes/:id", (req, res) =>{
                         err ? console.log(err): console.info("successfully updated Notes!")
                     });
                     console.log(noteId)
-                    //just the dar
+                    //just the darndest
                     res.send(noteId)
                 }
             }        
         }          
     })    
 })
-
+//gets the notes from the database and 
 app.get("/api/notes", (req, res) => {
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
         if (err) {
@@ -81,7 +85,7 @@ app.get("/api/notes", (req, res) => {
       })
     
 })
-
+//a catch-all if the user types something after the base URL that doesn't have a corresponding route
 app.get('*', (req, res) => res.sendFile(path.join(__dirname+"/public", 'index.html')))
 
 
