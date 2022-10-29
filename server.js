@@ -71,7 +71,15 @@ app.delete("/api/notes/:id", (req, res) =>{
 })
 
 app.get("/api/notes", (req, res) => {
-    res.json(db)
+    fs.readFile('./db/db.json', 'utf8', (err, data) => {
+        if (err) {
+          console.error(err);
+        } else {
+            console.log(data)
+            res.send(data)
+        }
+      })
+    
 })
 
 app.get('*', (req, res) => res.sendFile(path.join(__dirname+"/public", 'index.html')))
