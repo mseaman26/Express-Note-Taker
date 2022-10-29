@@ -22,14 +22,19 @@ app.get("/notes", (req, res) => {
 //hendles when the user adds a new note.  It is written into the database and the note is displayed in the note list
 app.post("/api/notes", (req, res) => {
     let updatedNotes
+    //notes file is read in
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
         if (err) {
           console.error(err);
         } else {
+          //file is parsed
           const parsedNotes = JSON.parse(data)
+          //unique id generated
           req.body.id = generateUniqueID({length: 4})
+          //new note added
           parsedNotes.push(req.body)
           updatedNotes = parsedNotes
+          //file is re-written
           fs.writeFile(
             './db/db.json',
             JSON.stringify(parsedNotes, null, 4),
@@ -40,6 +45,7 @@ app.post("/api/notes", (req, res) => {
           );
           console.log(updatedNotes)
           db = updatedNotes
+          //note is returned in the response
           res.json(req.body)
 
         }
@@ -47,21 +53,25 @@ app.post("/api/notes", (req, res) => {
 })
 
 
-//My best attempt at getting the delete buttons to work.  I'd love it if someone could show me what I did wrong.  It might have to do with using require instead of fs.readfile, but I tried that.  Anyways, it does delete the notes from the database, but it's not displayed until the server is killed and the program is run again
+//Got the delete buttons two work after much effort.  I had to modify the deleteNote function in index.js so that it RETURNED the fetch! 
 app.delete("/api/notes/:id", (req, res) =>{
-
+    //notes file is read in
     fs.readFile('./db/db.json', "utf8", (err, data) => {
         if(err){
             console.log(err)
         }else{
+          //file is parsed
             let parsedNotes = JSON.parse(data)
             console.log(req.params.id)
+            //looking for the note with the matching id so we can delete the right one
             for(let i = 0; i < parsedNotes.length; i++){
                 let noteId = req.params.id
                 if(req.params.id == parsedNotes[i].id){
+                    //using the splice method to remove the note from the array
                     parsedNotes.splice(i,1)
                     console.log("item deleted")
                     db = parsedNotes
+                    //re-writing the file
                     fs.writeFile("./db/db.json", JSON.stringify(parsedNotes, null, 4), (err) =>{
                         err ? console.log(err): console.info("successfully updated Notes!")
                     });
